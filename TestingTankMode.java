@@ -73,13 +73,40 @@ public class TestingTankMode extends OpMode{
             s2count++;
         }
         
-        
         robot.test1.setPower(gamepad1.left_stick_y);
         
-        // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
-        // if (Math.abs(gamepad1.left_stick_y) > 0) {
-        //     robot.test1.setPower(gamepad1.left_stick_y);
-        //     }
+        if (gamepad1.right_trigger || gamepad2.right_trigger) {
+            double pow = gamepad1.right_trigger;
+            robot.leftFrontDrive.setPower(-pow);
+            robot.leftBackDrive.setPower(-pow);
+            robot.rightFrontDrive.setPower(pow);
+            robot.rightBackDrive.setPower(-pow);
+        }
+        else if (gamepad1.left_trigger || gamepad2.left_trigger) {
+            robot.leftFrontDrive.setPower(pow);
+            robot.leftBackDrive.setPower(pow);
+            robot.rightFrontDrive.setPower(-pow);
+            robot.rightBackDrive.setPower(pow); 
+        }
+        else if ((!gamepad1.left_trigger && !gamepad1.right_trigger) && (!gamepad2.left_trigger && !gamepad2.right_trigger)) {
+            if ((Math.abs(gamepad1.left_stick_y) > 0.2 || Math.abs(gamepad1.right_stick_y) > 0.2)) {
+                robot.leftFrontDrive.setPower(gamepad1.left_stick_y);
+                robot.leftBackDrive.setPower(-gamepad1.left_stick_y);
+                robot.rightFrontDrive.setPower(gamepad1.right_stick_y);
+                robot.rightBackDrive.setPower(gamepad1.right_stick_y);
+            } else if ((Math.abs(gamepad2.left_stick_y) > 0.2 || Math.abs(gamepad2.right_stick_y) > 0.2)) {
+                robot.leftFrontDrive.setPower(gamepad2.left_stick_y);
+                robot.leftBackDrive.setPower(-gamepad2.left_stick_y);
+                robot.rightFrontDrive.setPower(gamepad2.right_stick_y);
+                robot.rightBackDrive.setPower(gamepad2.right_stick_y);
+            } else {
+                robot.leftFrontDrive.setPower(0);
+                robot.leftBackDrive.setPower(0);
+                robot.rightFrontDrive.setPower(0);
+                robot.rightBackDrive.setPower(0);
+            }
+        }
+
     }
     @Override
     public void stop() { //Code to run ONCE after the driver hits STOP

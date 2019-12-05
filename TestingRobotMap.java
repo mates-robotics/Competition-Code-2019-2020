@@ -16,6 +16,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class TestingRobotMap {
 
     /* Public OpMode members. */
+    public Servo servo1 = null;
+    public Servo servo2 = null;
     public DcMotor test1 = null;
 
     /* local OpMode members. */
@@ -29,6 +31,8 @@ public class TestingRobotMap {
 
         // Define and Initialize Motors
         test1 = hwMap.get(DcMotor.class, "test1");
+        servo1 = hwMap.get(Servo.class, "servo1");
+        servo2 = hwMap.get(Servo.class, "servo2");
 
 
         test1.setDirection(DcMotor.Direction.FORWARD);

@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.util.Range;
 @TeleOp(name="Tank Mode")
 public class TankMode extends OpMode{
 
+    double lidPos = 1;
     RobotMap robot = new RobotMap(); // use the class created to define a Pushbot's hardware
     private ElapsedTime runtime = new ElapsedTime();
 

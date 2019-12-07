@@ -16,6 +16,7 @@ public class TestingTankMode extends OpMode{
     
     int s1count = 2;
     int s2count = 2;
+    int sbothcount = 2;
 
     TestingRobotMap robot = new TestingRobotMap(); // use the class created to define a Pushbot's hardware
     private ElapsedTime runtime = new ElapsedTime();
@@ -27,8 +28,6 @@ public class TestingTankMode extends OpMode{
         robot.init(hardwareMap);
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Last Modified: March 5th, 2019", "Hello MATES Driver!");
-        robot.servo1.setPosition(servo1Pos);
-        robot.servo2.setPosition(servo2Pos);
     }
 
     @Override
@@ -45,7 +44,7 @@ public class TestingTankMode extends OpMode{
         robot.servo1.setPosition(servo1Pos);
         robot.servo2.setPosition(servo2Pos);
 
-        if (gamepad1.left_bumper)  {
+        if (gamepad1.dpad_left || gamepad2.dpad_left)  {
             runtime.reset();
             while (runtime.seconds() < 0.15) {
                 telemetry.addData("waitingL", "Hello MATES Driver!");
@@ -58,14 +57,12 @@ public class TestingTankMode extends OpMode{
             }
             s1count++;
         }
-
-        if (gamepad1.right_bumper) {
+        if (gamepad1.dpad_right || gamepad2.dpad_right) {
             runtime.reset();
             while (runtime.seconds() < 0.15) {
-                telemetry.addData("waitingR", "Hello MATES Driver!");
             }
             if (s2count % 2 == 0) {
-                servo2Pos = 0.70; //closed
+                servo2Pos = 0.69; //closed
             }
             else {
                 servo2Pos = 0.175; //open
@@ -73,22 +70,52 @@ public class TestingTankMode extends OpMode{
             s2count++;
         }
         
-        robot.test1.setPower(gamepad1.left_stick_y);
+        if (gamepad1.dpad_down || gamepad2.dpad_down) {
+            runtime.reset();
+            while (runtime.seconds() < 0.15) {
+            }
+            if (sbothcount % 2 == 0) {
+                servo1Pos = 0.3;
+                servo2Pos = 0.69; //closed
+            }
+            else {
+                servo1Pos = 0.775;
+                servo2Pos = 0.175; //open
+            }
+            sbothcount++;
+        }
         
-        if (gamepad1.right_trigger || gamepad2.right_trigger) {
-            double pow = gamepad1.right_trigger;
+        if (gamepad1.right_trigger > 0.2) {
+            robot.test1.setPower(gamepad1.right_trigger);
+        }
+        else if (gamepad1.left_trigger > 0.2) {
+            robot.test1.setPower(-gamepad1.left_trigger);
+        }
+        else if (gamepad2.right_trigger > 0.2) {
+            robot.test1.setPower(gamepad2.right_trigger);
+        }
+        else if (gamepad2.left_trigger > 0.2) {
+            robot.test1.setPower(-gamepad2.left_trigger);
+        }
+        else {
+            robot.test1.setPower(0);
+        }
+        
+        if (gamepad1.right_bumper || gamepad2.right_bumper) {
+            double pow = 1;
             robot.leftFrontDrive.setPower(-pow);
             robot.leftBackDrive.setPower(-pow);
             robot.rightFrontDrive.setPower(pow);
             robot.rightBackDrive.setPower(-pow);
         }
-        else if (gamepad1.left_trigger || gamepad2.left_trigger) {
+        else if (gamepad1.left_bumper || gamepad2.left_bumper) {
+            double pow = 1;
             robot.leftFrontDrive.setPower(pow);
             robot.leftBackDrive.setPower(pow);
             robot.rightFrontDrive.setPower(-pow);
             robot.rightBackDrive.setPower(pow); 
         }
-        else if ((!gamepad1.left_trigger && !gamepad1.right_trigger) && (!gamepad2.left_trigger && !gamepad2.right_trigger)) {
+        else {
             if ((Math.abs(gamepad1.left_stick_y) > 0.2 || Math.abs(gamepad1.right_stick_y) > 0.2)) {
                 robot.leftFrontDrive.setPower(gamepad1.left_stick_y);
                 robot.leftBackDrive.setPower(-gamepad1.left_stick_y);
